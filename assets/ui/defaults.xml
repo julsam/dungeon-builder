@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Default widgets settings -->
+<Defaults>
+	<Widget>
+		<Default
+			skin:Paint-color = "0xe2e1c7"
+            skin:Paint-border="2"
+            skin:Paint-borderColor="0xc1bf86"
+		/>
+	</Widget>
+    <Text>
+        <Default
+			format-font="$Assets.getFont('assets/fonts/regular.ttf').fontName"
+            label-selectable="false"
+			label-embedFonts = "true"
+            mouseEnabled="false"
+            format-color="0x302f2d"
+        />
+    </Text>
+	<InputText>
+		<Default 
+			skin:Paint-color="0xede9ac"
+            skin:Paint-border="1"
+            skin:Paint-borderColor="0xc1bf86"
+            format-size="13"
+            format-color="0x302f2d"
+		/>
+	</InputText>
+    <Button>
+        <Default
+            skin:Paint-color="0x302f2d"
+            skin:Paint-border="1"
+            skin:Paint-borderColor="0x403f3d"
+            format-size="13"
+            format-color="0xc1bf86"
+			
+			format-font="$Assets.getFont('assets/fonts/regular.ttf').fontName"
+			label-embedFonts = "true"
+        />
+        <Red
+            w="400"
+            h="60"
+
+            skin:Paint-color="0xFF0000"
+            skin:Paint-border="4"
+            skin:Paint-borderColor="0x00FF00"
+            skin:Paint-corners="[40]"
+
+            skinHovered:Paint-color="0xFF5555"
+            skinHovered:Paint-border="4"
+            skinHovered:Paint-borderColor="0x55FF55"
+            skinHovered:Paint-corners="[40]"
+
+            skinPressed:Paint-color="0x550000"
+            skinPressed:Paint-border="4"
+            skinPressed:Paint-borderColor="0x005500"
+            skinPressed:Paint-corners="[40]"
+			
+            format-size="12"
+            format-color="0xFFFFFF"
+        />
+    </Button>
+    <Slider>
+        <Default
+			skin:Paint-color="0xe93b40"
+			
+			slider-w="20"
+			slider-heightPt="100"
+			
+			slider-skin:Paint-color="0xaf292f"
+            slider-skin:Paint-border="0"
+        />
+    </Slider>
+	<Tip>
+		<Default 
+			skin:Paint-color="0xc1bf86"
+            skin:Paint-border="1"
+            skin:Paint-borderColor="0x302f2d"
+			skin:Paint-alpha="0.95"
+		/>
+	</Tip>
+</Defaults>

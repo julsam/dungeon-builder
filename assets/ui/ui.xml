@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Widget w="200" h="520" left="0" top="0">
+	<VBox widthPt="100" heightPt="100" padding="5" childPadding="5" align="'center,top'">
+		<Text text="'Dungeon Builder'" format-size="16" format-bold="true" />
+			
+		<Text text="'github.com/julsam/dungeon-builder'" label-selectable="true" mouseEnabled="true" format-size="11" />
+		
+		<Button text="'See the source code'" w="175" skin:Paint-color="0xc1bf86" format-color="0x302f2d" on-click="goToSourceCode();" />
+		
+		<Box h="5"></Box>
+		
+		<HBox widthPt="100" align="'left,top'">
+			<Text text="'Map width:'" w="75" />
+			<InputText id="'dungeonWidth'" text="'80'" w="100" />
+		</HBox>
+		
+		<HBox widthPt="100" align="'left,top'">
+			<Text text="'Map height:'" w="75" />
+			<InputText id="'dungeonHeight'" text="'80'" w="100" />
+		</HBox>
+		
+		<HBox widthPt="100" align="'left,top'">
+			<Text text="'Fail:'" w="75" tip:Tip-text="'A value from 1 upwards. The higer the value of fail, the greater the chance of larger dungeons \n being created. A low value (>10) tends to produce only a few rooms, \n a high value (<50) raises the chance that the whole map area will be used to create rooms \n (up to the value of maxrooms).'" />
+			<Slider
+				id="'fail'"
+				min="1"
+				max="400"
+				value="200"
+				w="100"
+				h="20"
+				on-change="#Text(failSliderValueLabel).text = Std.string(Std.int($this.value));"
+			/>
+			<Text id="'failSliderValueLabel'" text="Std.string(#Slider(fail).value)" w="20" />
+		</HBox>
+		
+		<HBox widthPt="100" align="'left,top'">
+			<Text text="'Corridor bias:'" w="75" tip:Tip-text="'corridor bias. This is a value from 0 to 100 and represents the %chance a feature \n will be a corridor instead of a room. A value of 0 will produce rooms only, \n a value of 100 will produce corridors only.'"  />
+			<Slider
+				id="'corridorBias'"
+				min="0"
+				max="100"
+				value="5"
+				w="100"
+				h="20"
+				on-change="#Text(corridorBiasSliderValueLabel).text = Std.string(Std.int($this.value));"
+			/>
+			<Text id="'corridorBiasSliderValueLabel'" text="Std.string(#Slider(corridorBias).value)" w="20" />
+		</HBox>
+		
+		<HBox widthPt="100" align="'left,top'">
+			<Text text="'Max rooms:'" w="75" tip:Tip-text="'Maximum number of rooms to create. This, combined with fail, \n can be used to create a specific number of rooms.'" />
+			<InputText id="'maxRooms'" text="'60'" w="100" />
+		</HBox>
+		
+		<Box h="5"></Box>
+		
+		<Button text="'Generate'" w="175" on-click="generateNewDungeon();" />
+		
+		<Box h="5"></Box>
+		
+		<VBox align="'left,top'">
+			<Text id="'roomsCount'" text="'Number of rooms:'" />
+			
+			<Text id="'corridorsCount'" text="'Number of corridors:'" />
+			
+			<Box h="5"></Box>
+			
+			<Text text="'White = walkable tiles\nRed = walls\nBlue = doors\nYellow = secret doors'" />
+			
+			<Box h="10"></Box>
+			
+			<Text text="'You can drag the map around with\n your mouse and zoom-in or out\n with your mouse wheel or with the\n slider below'" />
+					
+			<HBox widthPt="100" align="'left,top'">
+				<Text text="'Zoom:'" w="75" />
+				<Slider
+					id="'zoomSlider'"
+					min="1"
+					max="30"
+					value="8"
+					w="100"
+					h="20"
+					on-change="changeScale($this.value); #Text(zoomSliderValueLabel).text = Std.string(Std.int($this.value));"
+				/>
+				<Text id="'zoomSliderValueLabel'" text="Std.string(#Slider(zoomSlider).value)" w="20" />
+			</HBox>
+			
+			<Box h="10"></Box>
+		
+			<Button text="'Export (text file)'" w="175" skin:Paint-color="0xc1bf86" format-color="0x302f2d" on-click="saveFile();" />
+		</VBox>
+	</VBox>
+</Widget>
