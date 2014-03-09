@@ -10,3 +10,6 @@ Usage:
     map.generate(80, 40, 110, 50, 60);
     map.print();
 ```
+
+
+Try the demo here : https://dl.dropboxusercontent.com/u/100579483/dungeon-builder/DungeonBuilder.swf
