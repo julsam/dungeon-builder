@@ -45,7 +45,7 @@ class Visualizer extends Sprite
 		flash.Lib.current.addChild(UIBuilder.buildFn('assets/ui/ui.xml')());
 		
 		addEventListener(Event.ADDED_TO_STAGE, onAdded);
-		addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+		Lib.current.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
 	}
 	
 	private function onAdded(event:Event):Void
