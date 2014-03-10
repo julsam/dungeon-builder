@@ -39,6 +39,10 @@ Usage:
 
 
 Output example :
+	
+![output in the visualizer](https://pbs.twimg.com/media/BiUnyHaCYAAaUhg.png:large)
+
+is the same map as this output :
 
 ```
                                                    ###                          
