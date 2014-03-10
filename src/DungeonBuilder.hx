@@ -105,9 +105,7 @@ class DungeonBuilder
 			if (roomList.length == mrooms) {
 				failed = fail;
 			}
-			
 		}
-		
 		finalJoins();
 	}
 	
@@ -428,6 +426,5 @@ class DungeonBuilder
 		for (el in cList) {
 			joinCorridor(el[0], el[1], el[2], el[3], 10);
 		}
-	}
-	
+	}	
 }

@@ -1,24 +1,67 @@
-Haxe port of Dungeon builder originally written in Python by Steve Wallace http://roguebasin.roguelikedevelopment.org/index.php?title=Dungeon_builder_written_in_Python  
+# Dungeon Builder
+It's an Haxe port of the Dungeon builder written in python by Steve Wallace. See more infos here : http://roguebasin.roguelikedevelopment.org/index.php?title=Dungeon_builder_written_in_Python  
+It builds a dungeon procedurally generated with rooms, corridors, and doors. 
 
-
-Try the demo here : https://dl.dropboxusercontent.com/u/100579483/dungeon-builder/DungeonBuilder.swf
+## Try the demo : https://dl.dropboxusercontent.com/u/100579483/dungeon-builder/DungeonBuilder.swf
 	
 
 Read DungeonBuilder.hx for more informations. It doesn't require any particular library to run and can easily be incorporated in your project. It only require Utils.hx  
 
-Note that this code could be improved in many ways, any commit is welcomed.  
+Note that this code could be improved in many ways, any commit is welcome.  
 
-Usage:
+## Usage
+
+**Generate a new dungeon and print it:**
 ``` haxe
 	// building and printing
     var map:DungeonBuilder = new DungeonBuilder();
     map.generate(80, 40, 110, 50, 60);
     map.print();
-	
-	// get tile (x, y)
+```	
+
+## Examples
+
+**Get a specific tile:**
+``` haxe
 	dungeonBuild.mapArr[y][x];
-	
-	// go through each room
+```
+
+**Loop through all tile to feed your Tilemap:**
+``` haxe
+	for (y in 0...dungeonBuild.mapHeight)
+	{
+		for (x in 0...dungeonBuild.mapWidth)
+		{
+			if (dungeonBuild.mapArr[y][x] == 0) // walkable area
+			{
+				// setTile(x, y, 0);
+			}
+			else if (dungeonBuild.mapArr[y][x] == 1) // out of the dungeon
+			{
+				// setTile(x, y, 0);
+			}
+			else if (dungeonBuild.mapArr[y][x] == 2) // wall
+			{
+				// setTile(x, y, 0);
+			}
+			else if (dungeonBuild.mapArr[y][x] == 3) // opened door
+			{
+				// setTile(x, y, 0);
+			}
+			else if (dungeonBuild.mapArr[y][x] == 4) // closed door
+			{
+				// setTile(x, y, 0);
+			}
+			else if (dungeonBuild.mapArr[y][x] == 5) // secret door
+			{
+				// setTile(x, y, 0);
+			}
+		}
+	}
+```
+
+**Go through each room:**
+``` haxe
 	for (room in dungeonBuild.roomList)
 	{
 		room[0];	// room height
@@ -26,8 +69,10 @@ Usage:
 		room[2];	// room x position
 		room[3];	// room y position
 	}
+```
 	
-	// go through each corridor
+**Go through each corridor:**
+``` haxe
 	for (corridor in dungeonBuild.cList)
 	{
 		corridor[0];	// reference number to roomList
@@ -36,13 +81,16 @@ Usage:
 		corridor[3];	// heading (0 = North, 1 = East, 2 = South, 3 = West) 
 	}
 ```
+	
+Also check the `makePortal()` function if you want to change or add more types of doors (hole in the wall, opened door, closed door, secret door)
 
 
-Output example :
+
+## Output example
 	
 ![output in the visualizer](http://i.imgur.com/cTc47xN.pngge)
 
-is the same map as this output :
+is the same map as this printed output :
 
 ```
                                                           #####                 
