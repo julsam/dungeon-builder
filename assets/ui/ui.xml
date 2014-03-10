@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Widget w="200" h="520" left="0" top="0">
+<Widget w="200" h="600" left="0" top="0">
 	<VBox widthPt="100" heightPt="100" padding="5" childPadding="5" align="'center,top'">
 		<Text text="'Dungeon Builder'" format-size="16" format-bold="true" />
 			
@@ -87,8 +87,11 @@
 			</HBox>
 			
 			<Box h="10"></Box>
-		
-			<Button text="'Export (text file)'" w="175" skin:Paint-color="0xc1bf86" format-color="0x302f2d" on-click="saveFile();" />
 		</VBox>
+		<Button text="'Export (human readable)'" w="175" skin:Paint-color="0xc1bf86" format-color="0x302f2d" on-click="exportAsHumanReadable();" />
+		
+		<Button text="'Export (CSV)'" w="175" skin:Paint-color="0xc1bf86" format-color="0x302f2d" on-click="exportAsCSV();" />
+		
+		<Button text="'Load File (CSV)'" w="175" skin:Paint-color="0xc1bf86" format-color="0x302f2d" on-click="loadCSVFile();" />
 	</VBox>
 </Widget>

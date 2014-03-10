@@ -5,8 +5,11 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.events.ProgressEvent;
 import flash.net.FileReference;
+import flash.net.FileFilter;
 import flash.Lib;
+import flash.utils.ByteArray;
 import ru.stablex.ui.UIBuilder;
 import ru.stablex.ui.widgets.Button;
 import ru.stablex.ui.widgets.InputText;
@@ -19,6 +22,11 @@ import ru.stablex.ui.widgets.Widget;
  * ...
  * @author Julien Samama
  */
+enum BuildType {
+	GEN;
+	CSV;
+}
+
 class Visualizer extends Sprite
 {
 	private static var MIN_WIDTH(default, null):Int		= 20;
@@ -28,6 +36,7 @@ class Visualizer extends Sprite
 	private static var MIN_ROOMS(default, null):Int 	= 3;
 	private static var MAX_ROOMS(default, null):Int 	= 1000;
 	
+	private var dungeonBuild:DungeonBuilder;
 	private var dungeonSprite:Sprite;
 	private var dungeonWidth:Int;
 	private var dungeonHeight:Int;
@@ -35,7 +44,10 @@ class Visualizer extends Sprite
 	private var corridorBias:Int;
 	private var maxRooms:Int;
 	
-	private var mapData:String;
+	private var mapDataHumanReadable:String;
+	private var mapDataCSV:String;
+	private var uploadFileRef:FileReference;
+	private var nextBuild:BuildType;
 	
 	public function new() 
 	{
@@ -43,6 +55,13 @@ class Visualizer extends Sprite
 		
 		UIBuilder.init('assets/ui/defaults.xml');
 		flash.Lib.current.addChild(UIBuilder.buildFn('assets/ui/ui.xml')());
+		
+		// file ref for uploading files
+		uploadFileRef = new FileReference();
+		uploadFileRef.addEventListener(Event.SELECT, onFileSelected);
+		uploadFileRef.addEventListener(Event.CANCEL, onFileCancel);
+		uploadFileRef.addEventListener(ProgressEvent.PROGRESS, onFileProgress);
+		uploadFileRef.addEventListener(Event.COMPLETE, onFileLoaded);
 		
 		addEventListener(Event.ADDED_TO_STAGE, onAdded);
 		Lib.current.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
@@ -119,23 +138,42 @@ class Visualizer extends Sprite
 		maxRooms = Std.int(Utils.clamp(Std.parseInt(inputMaxRooms.text), MIN_ROOMS, MAX_ROOMS));
 		inputMaxRooms.text = Std.string(maxRooms);
 		
-		// generate dungeon
-		var dungeonBuild:DungeonBuilder = new DungeonBuilder();
+		/* generate dungeon */
+		dungeonBuild = new DungeonBuilder();
 		dungeonBuild.generate(dungeonWidth, dungeonHeight, fail, corridorBias, maxRooms);
 		//dungeonBuild.print();
 		
 		UIBuilder.getAs("roomsCount", Text).text = "Number of rooms : " + dungeonBuild.roomList.length;
 		UIBuilder.getAs("corridorsCount", Text).text = "Number of corridors : " + dungeonBuild.cList.length;
 	
+		nextBuild = BuildType.GEN;
+		createDungeonBitmap();
+	}
+	
+	private function createDungeonBitmap():Void
+	{
 		if (dungeonSprite.numChildren >= 1) {
 			dungeonSprite.removeChildAt(0);
 		}
 		var bd:BitmapData = new BitmapData(dungeonWidth, dungeonHeight);
 		
-		mapData = "";
-		for (y in Utils.range([dungeonHeight])) {
+		if (nextBuild.equals(BuildType.CSV)) {
+			buildFromCSV(bd);
+		} else {
+			buildFromNewGeneration(bd);
+		}
+		
+		var bitmap:Bitmap = new Bitmap(bd);
+		dungeonSprite.addChild(bitmap);
+	}
+	
+	private function buildFromNewGeneration(bd:BitmapData):Void
+	{
+		mapDataHumanReadable = "";
+		mapDataCSV = "";
+		for (y in 0...dungeonBuild.mapHeight) {
 			var line = "";
-			for (x in Utils.range([dungeonWidth])) {
+			for (x in 0...dungeonBuild.mapWidth) {
 				if (dungeonBuild.mapArr[y][x] == 0) {	// walkable tile
 					line += ".";
 					bd.setPixel(x, y, 0xede9ac);
@@ -160,13 +198,62 @@ class Visualizer extends Sprite
 					line += "~";
 					bd.setPixel(x, y, 0xeb970f);
 				}
+				// csv
+				mapDataCSV += dungeonBuild.mapArr[y][x];
+				if (x < dungeonWidth - 1) {
+					 mapDataCSV += ",";
+				}
 			}
 			//trace(line);
-			mapData += line + '\n';
+			mapDataHumanReadable += line + '\n';		
+			if (y < dungeonHeight - 1) {
+				mapDataCSV += '\n';
+			}
 		}
+	}
+	
+	private function buildFromCSV(bd:BitmapData):Void
+	{
+		mapDataHumanReadable = "";
 		
-		var bitmap:Bitmap = new Bitmap(bd);
-		dungeonSprite.addChild(bitmap);
+		var row:Array<String> = mapDataCSV.split('\n'),
+			rows:Int = row.length,
+			col:Array<String>, cols:Int, x:Int, y:Int;
+		for (y in 0...rows)
+		{
+			col = row[y].split(',');
+			cols = col.length;
+			var line = "";
+			
+			for (x in 0...cols)
+			{
+				if (col[x] == '0') {	// walkable tile
+					line += ".";
+					bd.setPixel(x, y, 0xede9ac);
+				}
+				if (col[x] == '1') {	// out of the dungeon
+					line += " ";
+					bd.setPixel(x, y, 0x302f2d);
+				}
+				if (col[x] == '2') {	// wall
+					line += "#";
+					bd.setPixel(x, y, 0xe93c40);
+				}
+				if (col[x] == '3') {	// opened door
+					line += "=";
+					bd.setPixel(x, y, 0x1f8bc3);
+				}
+				if (col[x] == '4') {	// closed door
+					line += "=";
+					bd.setPixel(x, y, 0x1f8bc3);
+				}
+				if (col[x] == '5') {	// secret door
+					line += "~";
+					bd.setPixel(x, y, 0xeb970f);
+				}
+			}
+			mapDataHumanReadable += line + '\n';
+		}
 	}
 	
 	private function changeScale(value:Float):Void
@@ -179,9 +266,51 @@ class Visualizer extends Sprite
 		Utils.openURL("http://github.com/julsam/dungeon-builder");
 	}
 	
-	private function saveFile():Void
+	private function exportAsHumanReadable():Void
 	{
 		var file:FileReference = new FileReference();
-		file.save(mapData, Date.now().getTime() + ".txt");
+		file.save(mapDataHumanReadable, Date.now().getTime() + ".txt");
+	}
+	
+	private function exportAsCSV():Void
+	{
+		var file:FileReference = new FileReference();
+		file.save(mapDataCSV, Date.now().getTime() + ".csv");
+	}
+	
+	private function loadCSVFile():Void
+	{
+		var fileFilter:FileFilter = new FileFilter("CSV File", "*.txt;*.csv");
+		uploadFileRef.browse([fileFilter]);
+	}
+	
+	private function onFileCancel(e:Event):Void
+	{
+		//trace("cancelHandler");
+	}
+	
+	private function onFileSelected(e:Event):Void
+	{
+		//trace("selectHandler: "+uploadFileRef.name);
+		uploadFileRef.load();
+	}
+	
+	private function onFileProgress(e:ProgressEvent):Void
+	{
+		//trace("progressHandler: loaded=" + e.bytesLoaded + " total=" + e.bytesTotal);
+	}
+	
+	private function onFileLoaded(e:Event):Void
+	{
+		//trace("onFileLoaded: " + uploadFileRef.name);
+		var byteArray:ByteArray = uploadFileRef.data;
+		var content:String = byteArray.readUTFBytes(byteArray.length);
+		//trace(content);
+		mapDataCSV = content;
+		nextBuild = BuildType.CSV;
+		createDungeonBitmap();
+		
+		UIBuilder.getAs("roomsCount", Text).text = "Number of rooms : ?";
+		UIBuilder.getAs("corridorsCount", Text).text = "Number of corridors : ?";
 	}
 }
