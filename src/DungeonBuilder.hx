@@ -32,11 +32,11 @@ class DungeonBuilder
 	
 	/**
 	 * Generate random layout of rooms, corridors and other features.
-	 * @param	xsize	Width of the map area.
-	 * @param	ysize 	Height of the map area.
-	 * @param	fail	A value from 1 upwards. The higer the value of fail, the greater the chance of larger dungeons being created. A low value (>10) tends to produce only a few rooms, a high value (<50) raises the chance that the whole map area will be used to create rooms (up to the value of mrooms).
-	 * @param	b1		corridor bias. This is a value from 0 to 100 and represents the %chance a feature will be a corridor instead of a room. A value of 0 will produce rooms only, a value of 100 will produce corridors only.
-	 * @param	mrooms	Maximum number of rooms to create. This, combined with fail, can be used to create a specific number of rooms.
+	 * @param   xsize       Width of the map area.
+	 * @param   ysize       Height of the map area.
+	 * @param	fail        A value from 1 upwards. The higer the value of fail, the greater the chance of larger dungeons being created. A low value (>10) tends to produce only a few rooms, a high value (<50) raises the chance that the whole map area will be used to create rooms (up to the value of mrooms).
+	 * @param	b1          corridor bias. This is a value from 0 to 100 and represents the %chance a feature will be a corridor instead of a room. A value of 0 will produce rooms only, a value of 100 will produce corridors only.
+	 * @param	mrooms	    Maximum number of rooms to create. This, combined with fail, can be used to create a specific number of rooms.
 	 */
 	public function generate(xsize:Int, ysize:Int, fail:Int, b1:Int, mrooms:Int):Void
 	{
@@ -136,6 +136,9 @@ class DungeonBuilder
 	/**
 	 * Randomly produce room size.
 	 * @return Return an Anonymous Struct/Object
+	 *          rwide       Width
+	 *          rlong       Height
+	 *          rtype       Type
 	 */
 	private function makeRoom():Dynamic
 	{
@@ -145,6 +148,9 @@ class DungeonBuilder
 	/**
 	 * Randomly produce corridor length and heading
 	 * @return Return an Anonymous Struct/Object
+	 *          w       Width
+	 *          l       Height
+	 *          t       Heading (0 = North, 1 = East, 2 = South, 3 = West)
 	 */
 	private function makeCorridor():Dynamic
 	{
@@ -169,6 +175,15 @@ class DungeonBuilder
 	
 	/**
 	 * Place feature if enough space and return canPlace as true or false.
+	 * @param	ll          Height of the room
+	 * @param	ww          Width of the room
+	 * @param	xposs       X position of the room
+	 * @param	yposs       Y position of the room
+	 * @param	xsize       Map Width
+	 * @param	ysize       Map Height
+	 * @param	rty	        Type of room; can be a normal room or a corridor. 0 to 3 = corridor, 5 = normal room, 6 = starting room
+	 * @param	ext         Exit Heading (0 = North wall, 1 = East wall, 2 = South wall, 3 = West wall)
+	 * @return  Return whether placed is true/false if a room was placed of not.
 	 */
 	private function placeRoom(ll:Int, ww:Int, xposs:Int, yposs:Int, xsize:Int, ysize:Int, rty:Int, ext:Int):Int // int but should be bool
 	{
@@ -236,6 +251,11 @@ class DungeonBuilder
 	/**
 	 * Pick random wall and random point along that wall.
 	 * @return	Return an Anonymous Struct/Object
+	 *          rx      X position on the wall
+	 *          ry      Y position
+	 *          rx2     X position inside the room (1 step away from the exit)
+	 *          ry2     Y position inside the room (1 step away from the exit)
+	 *          rw      Heading (0 = North wall, 1 = East wall, 2 = South wall, 3 = West wall)
 	 */
 	private function makeExit(rn:Int):Dynamic
 	{
@@ -245,8 +265,8 @@ class DungeonBuilder
 		while (true) {
 			rw = Utils.randrange(0, 4);
 			if (rw == 0) { // North wall
-				rx = Utils.randrange(0, room[1]) + room[2];
-				ry = room[3] - 1;
+				rx = Utils.randrange(0, room[1]) + room[2];	// random x position on the north wall
+				ry = room[3] - 1;							// y position don't change
 				rx2 = rx;
 				ry2 = ry - 1;
 			} else if (rw == 1) { // East wall
@@ -274,8 +294,8 @@ class DungeonBuilder
 	
 	/**
 	 * Create doors in walls.
-	 * @param	px	Portal's X position.
-	 * @param	py	Portal's Y position.
+	 * @param	px      Portal's X position.
+	 * @param	py      Portal's Y position.
 	 */
 	private function makePortal(px:Int, py:Int):Void
 	{
@@ -301,6 +321,11 @@ class DungeonBuilder
 	
 	/**
 	 * Check corridor endpoint and make an exit if it links to another room.
+	 * @param	cno     Room number (probably last room created in roomList)
+	 * @param	xp      X position (is inside a room, one step away from the exit)
+	 * @param	yp      Y position (is inside a room, one step away from the exit)
+	 * @param	ed      Heading (0 = North wall, 1 = East wall, 2 = South wall, 3 = West wall)
+	 * @param	psb     Chance of linking rooms
 	 */
 	private function joinCorridor(cno:Int, xp:Int, yp:Int, ed:Int, psb:Int):Void
 	{
@@ -400,8 +425,8 @@ class DungeonBuilder
 	 */
 	private function finalJoins():Void
 	{
-		for (x in cList) {
-			joinCorridor(x[0], x[1], x[2], x[3], 10);
+		for (el in cList) {
+			joinCorridor(el[0], el[1], el[2], el[3], 10);
 		}
 	}
 	
