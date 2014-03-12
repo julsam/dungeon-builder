@@ -14,73 +14,73 @@ Note that this code could be improved in many ways, any commit is welcome.
 
 **Generate a new dungeon and print it:**
 ``` haxe
-	// building and printing
-    var map:DungeonBuilder = new DungeonBuilder();
-    map.generate(80, 40, 110, 50, 60);
-    map.print();
+// building and printing
+var dungeonBuild:DungeonBuilder = new DungeonBuilder();
+dungeonBuild.generate(80, 40, 110, 50, 60);
+dungeonBuild.print();
 ```	
 
 ## Examples
 
 **Get a specific tile:**
 ``` haxe
-	dungeonBuild.mapArr[y][x];
+dungeonBuild.mapArr[y][x];
 ```
 
 **Loop through all tile to feed your Tilemap:**
 ``` haxe
-	for (y in 0...dungeonBuild.mapHeight)
+for (y in 0...dungeonBuild.mapHeight)
+{
+	for (x in 0...dungeonBuild.mapWidth)
 	{
-		for (x in 0...dungeonBuild.mapWidth)
+		if (dungeonBuild.mapArr[y][x] == 0) // walkable area
 		{
-			if (dungeonBuild.mapArr[y][x] == 0) // walkable area
-			{
-				// setTile(x, y, 0);
-			}
-			else if (dungeonBuild.mapArr[y][x] == 1) // out of the dungeon
-			{
-				// setTile(x, y, 0);
-			}
-			else if (dungeonBuild.mapArr[y][x] == 2) // wall
-			{
-				// setTile(x, y, 0);
-			}
-			else if (dungeonBuild.mapArr[y][x] == 3) // opened door
-			{
-				// setTile(x, y, 0);
-			}
-			else if (dungeonBuild.mapArr[y][x] == 4) // closed door
-			{
-				// setTile(x, y, 0);
-			}
-			else if (dungeonBuild.mapArr[y][x] == 5) // secret door
-			{
-				// setTile(x, y, 0);
-			}
+			// setTile(x, y, 0);
+		}
+		else if (dungeonBuild.mapArr[y][x] == 1) // out of the dungeon
+		{
+			// setTile(x, y, 0);
+		}
+		else if (dungeonBuild.mapArr[y][x] == 2) // wall
+		{
+			// setTile(x, y, 0);
+		}
+		else if (dungeonBuild.mapArr[y][x] == 3) // opened door
+		{
+			// setTile(x, y, 0);
+		}
+		else if (dungeonBuild.mapArr[y][x] == 4) // closed door
+		{
+			// setTile(x, y, 0);
+		}
+		else if (dungeonBuild.mapArr[y][x] == 5) // secret door
+		{
+			// setTile(x, y, 0);
 		}
 	}
+}
 ```
 
 **Go through each room:**
 ``` haxe
-	for (room in dungeonBuild.roomList)
-	{
-		room[0];	// room height
-		room[1];	// room width
-		room[2];	// room x position
-		room[3];	// room y position
-	}
+for (room in dungeonBuild.roomList)
+{
+	room[0];	// room height
+	room[1];	// room width
+	room[2];	// room x position
+	room[3];	// room y position
+}
 ```
 	
 **Go through each corridor:**
 ``` haxe
-	for (corridor in dungeonBuild.cList)
-	{
-		corridor[0];	// reference number to roomList
-		corridor[1];	// start x position
-		corridor[2];	// start y position 
-		corridor[3];	// heading (0 = North, 1 = East, 2 = South, 3 = West) 
-	}
+for (corridor in dungeonBuild.cList)
+{
+	corridor[0];	// reference number to roomList
+	corridor[1];	// start x position
+	corridor[2];	// start y position 
+	corridor[3];	// heading (0 = North, 1 = East, 2 = South, 3 = West) 
+}
 ```
 	
 Also check the `makePortal()` function if you want to change or add more types of doors (hole in the wall, opened door, closed door, secret door)

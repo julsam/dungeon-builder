@@ -56,11 +56,8 @@ class Visualizer extends Sprite
 		UIBuilder.init('assets/ui/defaults.xml');
 		flash.Lib.current.addChild(UIBuilder.buildFn('assets/ui/ui.xml')());
 		
-		// file ref for uploading files
 		uploadFileRef = new FileReference();
 		uploadFileRef.addEventListener(Event.SELECT, onFileSelected);
-		uploadFileRef.addEventListener(Event.CANCEL, onFileCancel);
-		uploadFileRef.addEventListener(ProgressEvent.PROGRESS, onFileProgress);
 		uploadFileRef.addEventListener(Event.COMPLETE, onFileLoaded);
 		
 		addEventListener(Event.ADDED_TO_STAGE, onAdded);
@@ -69,7 +66,7 @@ class Visualizer extends Sprite
 	
 	private function onAdded(event:Event):Void
 	{
-        removeEventListener(Event.ADDED_TO_STAGE, onAdded);
+		removeEventListener(Event.ADDED_TO_STAGE, onAdded);
 		addEventListener(Event.ENTER_FRAME, update);
 		
 		// dungeon sprite
@@ -84,7 +81,7 @@ class Visualizer extends Sprite
 		
 		dungeonSprite.x = (Lib.current.stage.width / 2) + 200 / 2 - dungeonSprite.width / 2;
 		dungeonSprite.y = Lib.current.stage.height / 2 - dungeonSprite.height / 2;
-    }
+	}
 	
 	private function onMouseWheel(e:MouseEvent):Void 
 	{
@@ -284,28 +281,15 @@ class Visualizer extends Sprite
 		uploadFileRef.browse([fileFilter]);
 	}
 	
-	private function onFileCancel(e:Event):Void
-	{
-		//trace("cancelHandler");
-	}
-	
 	private function onFileSelected(e:Event):Void
 	{
-		//trace("selectHandler: "+uploadFileRef.name);
 		uploadFileRef.load();
-	}
-	
-	private function onFileProgress(e:ProgressEvent):Void
-	{
-		//trace("progressHandler: loaded=" + e.bytesLoaded + " total=" + e.bytesTotal);
 	}
 	
 	private function onFileLoaded(e:Event):Void
 	{
-		//trace("onFileLoaded: " + uploadFileRef.name);
 		var byteArray:ByteArray = uploadFileRef.data;
 		var content:String = byteArray.readUTFBytes(byteArray.length);
-		//trace(content);
 		mapDataCSV = content;
 		nextBuild = BuildType.CSV;
 		createDungeonBitmap();
