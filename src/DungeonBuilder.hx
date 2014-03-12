@@ -113,9 +113,9 @@ class DungeonBuilder
 	{
 		trace("Number of rooms: " + roomList.length);
 		trace("Number of corridors: " + cList.length);
-		for (y in Utils.range([mapHeight])) {
+		for (y in 0...mapHeight) {
 		   var line = "";
-		   for (x in Utils.range([mapWidth])) {
+		   for (x in 0...mapWidth) {
 			  if (mapArr[y][x]==0)
 				 line += ".";
 			  if (mapArr[y][x]==1)
@@ -217,9 +217,8 @@ class DungeonBuilder
 			canPlace = 0;
 			return canPlace;
 		} else {
-			for (j in Utils.range([ll])) {
-				for (k in Utils.range([ww])) {
-					
+			for (j in 0...ll) {
+				for (k in 0...ww) {
 					if (mapArr[ypos + j][xpos + k] != 1) {
 						canPlace = 2;
 					}
@@ -231,13 +230,13 @@ class DungeonBuilder
 		if (canPlace == 1) {
 			var temp = [ll, ww, xpos, ypos];
 			roomList.push(temp);
-			for (j in Utils.range([ll + 2])) { // then build walls
-				for (k in Utils.range([ww + 2])) {
+			for (j in 0...ll + 2) { // then build walls
+				for (k in 0...ww + 2) {
 					mapArr[ypos - 1 + j][xpos - 1 + k] = 2;
 				}
 			}
-			for (j in Utils.range([ll])) { // then build floors
-				for (k in Utils.range([ww])) {
+			for (j in 0...ll) { // then build floors
+				for (k in 0...ww) {
 					mapArr[ypos + j][xpos + k] = 0;
 				}
 			}
