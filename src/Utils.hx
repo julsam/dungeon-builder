@@ -9,7 +9,7 @@ import flash.net.URLRequest;
 
 class Utils
 {
-	public static function openURL(url:String):Void
+	public static inline function openURL(url:String):Void
 	{
 		Lib.getURL(new URLRequest(url));
 	}
@@ -20,7 +20,7 @@ class Utils
 	 * @param	max
 	 * @return	The random Int.
 	 */
-	public static function randrange(min:Int, max:Int):Int
+	public static inline function randrange(min:Int, max:Int):Int
 	{
 		return (Math.floor(Math.random() * (max - min)) + min);
 	}
@@ -98,7 +98,7 @@ class Utils
 		return null;
 	}
 	
-	public static function scaleFromCenter(dis:Dynamic, sX:Float, sY:Float):Void
+	public static inline function scaleFromCenter(dis:Dynamic, sX:Float, sY:Float):Void
 	{
 		var prevW:Float = dis.width;
 		var prevH:Float = dis.height;
