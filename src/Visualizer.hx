@@ -29,12 +29,12 @@ enum BuildType {
 
 class Visualizer extends Sprite
 {
-	private static var MIN_WIDTH(default, null):Int		= 20;
-	private static var MAX_WIDTH(default, null):Int 	= 1000;
-	private static var MIN_HEIGHT(default, null):Int 	= 20;
-	private static var MAX_HEIGHT(default, null):Int 	= 1000;
-	private static var MIN_ROOMS(default, null):Int 	= 3;
-	private static var MAX_ROOMS(default, null):Int 	= 1000;
+	private static inline var MIN_WIDTH:Int 	= 20;
+	private static inline var MAX_WIDTH:Int 	= 1000;
+	private static inline var MIN_HEIGHT:Int 	= 20;
+	private static inline var MAX_HEIGHT:Int 	= 1000;
+	private static inline var MIN_ROOMS:Int 	= 3;
+	private static inline var MAX_ROOMS:Int 	= 1000;
 	
 	private var dungeonBuild:DungeonBuilder;
 	private var dungeonSprite:Sprite;
