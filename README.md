@@ -12,7 +12,7 @@ Note that this code could be improved in many ways, any commit is welcome.
 
 ## Usage
 
-**Generate a new dungeon and print it:**
+Generate a new dungeon and print it:
 ``` haxe
 // building and printing
 var dungeonBuild:DungeonBuilder = new DungeonBuilder();
@@ -22,12 +22,12 @@ dungeonBuild.print();
 
 ## Examples
 
-**Get a specific tile:**
+Get a specific tile:
 ``` haxe
 dungeonBuild.mapArr[y][x];
 ```
 
-**Loop through all tile to feed your Tilemap:**
+Loop through all tile to feed your Tilemap:
 ``` haxe
 for (y in 0...dungeonBuild.mapHeight)
 {
@@ -61,7 +61,7 @@ for (y in 0...dungeonBuild.mapHeight)
 }
 ```
 
-**Go through each room:**
+Go through each room:
 ``` haxe
 for (room in dungeonBuild.roomList)
 {
@@ -72,7 +72,7 @@ for (room in dungeonBuild.roomList)
 }
 ```
 	
-**Go through each corridor:**
+Go through each corridor:
 ``` haxe
 for (corridor in dungeonBuild.cList)
 {
