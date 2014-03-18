@@ -43,7 +43,12 @@ class DungeonBuilder
 		mapWidth = xsize;
 		mapHeight = ysize;
 		
+		// fills the 2D array with ones
+		#if haxe3
+		mapArr = [for (y in 0...ysize) [for (x in 0...xsize) 1]];
+		#else
 		mapArr = Utils.fillArray([ysize, xsize], 1);
+		#end
 		
 		var mkr = makeRoom();
 		var w = mkr.rwide, l = mkr.rlong, t = mkr.rtype;
@@ -85,7 +90,7 @@ class DungeonBuilder
 			// Possiblilty of linking rooms
 			else if (roomDone == 2) {
 				if (mapArr[ey2][ex2] == 0) {
-					if (Utils.randrange(0, 100) < 7) {
+					if (Utils.randrange(0, 100) < 7) { // tweak this number up to and don't place doors you want big open areas connected with huge entrance and corridors
 						makePortal(ex, ey);
 					}
 					failed += 1;
@@ -95,7 +100,7 @@ class DungeonBuilder
 			else {
 				makePortal(ex, ey);
 				failed = 0;
-				if (t < 5) {
+				if (t < 5) { // 0 to 3 = corridor I think, 4 is not assigned, 5 is a room and 6 is the starting room
 					var tc = [roomList.length - 1, ex2, ey2, t];
 					cList.push(tc);
 					joinCorridor(roomList.length - 1, ex2, ey2, t, 50);
@@ -181,9 +186,9 @@ class DungeonBuilder
 	 * @param	ysize       Map Height
 	 * @param	rty	        Type of room; can be a normal room or a corridor. 0 to 3 = corridor, 5 = normal room, 6 = starting room
 	 * @param	ext         Exit Heading (0 = North wall, 1 = East wall, 2 = South wall, 3 = West wall)
-	 * @return  Return whether placed is true/false if a room was placed of not.
+	 * @return  Return if a room was placed of not.
 	 */
-	private function placeRoom(ll:Int, ww:Int, xposs:Int, yposs:Int, xsize:Int, ysize:Int, rty:Int, ext:Int):Int // int but should be bool
+	private function placeRoom(ll:Int, ww:Int, xposs:Int, yposs:Int, xsize:Int, ysize:Int, rty:Int, ext:Int):Int
 	{
 		// Arrange for heading
 		var xpos = xposs;
@@ -210,7 +215,8 @@ class DungeonBuilder
 		
 		// Then check if there is space
 		var canPlace = 1;
-		if (ww + xpos + 1 > xsize - 1 || ll + ypos + 1 > ysize) {
+		//if (ww + xpos + 1 > xsize - 1 || ll + ypos + 1 > ysize) { // -1 is in original code, but it's useless unless you want some margin
+		if (ww + xpos + 1 > xsize || ll + ypos + 1 > ysize) {
 			canPlace = 0;
 			return canPlace;
 		} else if (xpos < 1 || ypos < 1) {
@@ -219,10 +225,12 @@ class DungeonBuilder
 		} else {
 			for (j in 0...ll) {
 				for (k in 0...ww) {
-					if (mapArr[ypos + j][xpos + k] != 1) {
+					if (mapArr[ypos + j][xpos + k] != 1) { // check if it's connecting to an other room (if it's not a void tile it has to be a wall or door of an other room)
 						canPlace = 2;
+						break;
 					}
 				}
+				if (canPlace == 2) break;
 			}
 		}
 		
@@ -242,11 +250,16 @@ class DungeonBuilder
 			}
 		}
 		
-		return canPlace; // Return whether placed is true/false
+		// Return whether placed is true/false
+		// 0 = out of boundaries of the map,
+		// 1 = there is space to place the room,
+		// 2 = there is place and it's connecting to an other exsiting room
+		return canPlace; 
 	}
 	
 	/**
 	 * Pick random wall and random point along that wall.
+	 * TODO: fix the while(true) -> it crash in this infinite loop... (rarely happens tho)
 	 * @return	Return an Anonymous Struct/Object
 	 *          rx      X position on the wall
 	 *          ry      Y position
@@ -318,22 +331,22 @@ class DungeonBuilder
 	
 	/**
 	 * Check corridor endpoint and make an exit if it links to another room.
-	 * @param	cno     Room number (probably last room created in roomList)
-	 * @param	xp      X position (is inside a room, one step away from the exit)
-	 * @param	yp      Y position (is inside a room, one step away from the exit)
-	 * @param	ed      Heading (0 = North wall, 1 = East wall, 2 = South wall, 3 = West wall)
+	 * @param	cno     Room number = actually it's the corridor's number itself (probably last room created in roomList)
+	 * @param	xp      X position 
+	 * @param	yp      Y position
+	 * @param	ed      Exit direction / heading (0 = North wall, 1 = East wall, 2 = South wall, 3 = West wall)
 	 * @param	psb     Chance of linking rooms
 	 */
 	private function joinCorridor(cno:Int, xp:Int, yp:Int, ed:Int, psb:Int):Void
 	{
-		var cArea = roomList[cno];
+		var cArea = roomList[cno]; // this room (which actually is a corridor)
 		var endx = 0, endy = 0;
 		
 		// Find the corridor endpoint
-		if (xp != cArea[2] || yp != cArea[3]) {
+		if (xp != cArea[2] || yp != cArea[3]) { // if xp or yp are on the bottom right corner
 			endx = xp - (cArea[1] - 1);
 			endy = yp - (cArea[0] - 1);
-		} else {
+		} else { // else xp and yp are on the top left corner
 			endx = xp + (cArea[1] - 1);
 			endy = yp + (cArea[0] - 1);
 		}
