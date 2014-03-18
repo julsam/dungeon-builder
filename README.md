@@ -87,7 +87,9 @@ for (corridor in dungeonBuild.cList)
 }
 ```
 	
-Also check the `makePortal()` function if you want to change or add more types of doors (hole in the wall, opened door, closed door, secret door)
+## Tips
+ * Check the `makePortal()` function if you want to change or add more types of doors (hole in the wall, opened door, closed door, secret door).  
+ * If you want the starting room, from where the algorithm built everything, it's the first room in the `mapArr` array. The array is sorted from the first room created to the last one.  
 
 
 
