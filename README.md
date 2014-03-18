@@ -16,7 +16,11 @@ Generate a new dungeon and print it:
 ``` haxe
 // building and printing
 var dungeonBuild:DungeonBuilder = new DungeonBuilder();
-dungeonBuild.generate(80, 40, 110, 50, 60);
+dungeonBuild.generate(80,  // map width
+                      80,  // map height
+                      200, // fail, the higer the value of fail, the greater the chance of larger dungeons being created
+                      5,   // corridors
+                      60); // max rooms
 dungeonBuild.print();
 ```	
 
