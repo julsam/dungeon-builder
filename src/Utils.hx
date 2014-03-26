@@ -57,14 +57,20 @@ class Utils
 		return null;
 	}
 	
-	public static inline function scaleFromCenter(dis:Dynamic, sX:Float, sY:Float):Void
+	/**
+	 * Scale a DisplayObject (like Sprite) from the center.
+	 * @param	dis     DisplayObject to scale.
+	 * @param	sX      New x scale.
+	 * @param	sY      New y scale.
+	 */
+	public static inline function scaleFromCenter(displayObject:Dynamic, sX:Float, sY:Float):Void
 	{
-		var prevW:Float = dis.width;
-		var prevH:Float = dis.height;
-		dis.scaleX = sX;
-		dis.scaleY = sY;
-		dis.x += (prevW - dis.width) / 2;
-		dis.y += (prevH - dis.height) / 2;
+		var prevW:Float = displayObject.width;
+		var prevH:Float = displayObject.height;
+		displayObject.scaleX = sX;
+		displayObject.scaleY = sY;
+		displayObject.x += (prevW - displayObject.width) / 2;
+		displayObject.y += (prevH - displayObject.height) / 2;
 	}
 	
 	/**

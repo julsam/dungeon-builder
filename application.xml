@@ -15,9 +15,10 @@
 	<!-- classpath, haxe libs -->
 	<source path="src" />
 	
-	<haxelib name="stablexui" />
     <haxelib name="openfl" />
     <haxelib name="actuate" />
+    <haxelib name="hscript" />
+    <haxelib name="haxeui" />
 	
 	<!-- assets -->
 	<icon path="assets/openfl.svg" />

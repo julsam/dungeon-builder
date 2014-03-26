@@ -5,10 +5,13 @@
 	<Widget>
 		<Default
 			skin:Paint-color = "0xe2e1c7"
-            skin:Paint-border="2"
-            skin:Paint-borderColor="0xc1bf86"
 		/>
 	</Widget>
+	<VBox>
+		<Default
+			skin:Paint-color = "0xffffff"
+		/>
+	</VBox>
     <Text>
         <Default
 			format-font="$Assets.getFont('assets/fonts/regular.ttf').fontName"
@@ -37,28 +40,6 @@
 			
 			format-font="$Assets.getFont('assets/fonts/regular.ttf').fontName"
 			label-embedFonts = "true"
-        />
-        <Red
-            w="400"
-            h="60"
-
-            skin:Paint-color="0xFF0000"
-            skin:Paint-border="4"
-            skin:Paint-borderColor="0x00FF00"
-            skin:Paint-corners="[40]"
-
-            skinHovered:Paint-color="0xFF5555"
-            skinHovered:Paint-border="4"
-            skinHovered:Paint-borderColor="0x55FF55"
-            skinHovered:Paint-corners="[40]"
-
-            skinPressed:Paint-color="0x550000"
-            skinPressed:Paint-border="4"
-            skinPressed:Paint-borderColor="0x005500"
-            skinPressed:Paint-corners="[40]"
-			
-            format-size="12"
-            format-color="0xFFFFFF"
         />
     </Button>
     <Slider>

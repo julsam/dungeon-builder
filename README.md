@@ -10,6 +10,13 @@ Read DungeonBuilder.hx for more informations. It doesn't require any particular 
 
 Note that this code could be improved in many ways, any commit is welcome.  
 
+## Dependencies to compile (flash only for now)
+ * haxe >= 3.1
+ * openfl >= 1.3
+ * actuate >= 1.7
+ * hscript >= 2.0
+ * haxeui >= 1.3.0
+
 ## Usage
 
 Generate a new dungeon and print it:
