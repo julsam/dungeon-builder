@@ -96,7 +96,6 @@ class PanelController extends XMLController
 	
 	function onSliderInputChange(e:UIEvent):Void
 	{
-		trace(e.getComponentAs(TextInput).id);
 		var textinput:TextInput = e.getComponentAs(TextInput);
 		
 		// if failInput -> update failSlider
@@ -144,11 +143,6 @@ class PanelController extends XMLController
 	function importMapCSV(e:UIEvent):Void
 	{
 		visualizer.importCSVMap();
-	}
-	
-	function onCustomPopupButtonClick(e:UIEvent):Void
-	{
-		trace("Callback : Custom button clicked !");
 	}
 	
 	function gotoSourceCode():Void

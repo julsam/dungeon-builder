@@ -209,8 +209,7 @@ class Visualizer extends Sprite
 					 mapDataCSV += ",";
 				}
 			}
-			//trace(line);
-			mapDataASCII += line + '\n';		
+			mapDataASCII += line + '\n';
 			if (y < dungeonHeight - 1) {
 				mapDataCSV += '\n';
 			}
