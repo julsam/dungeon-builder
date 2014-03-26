@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<vbox width="100%" id="editor-container">
+<vbox width="100%" height="450" id="editor-container">
 	<style>
 		Root.custompopup {
 			cornerRadius: 0;
@@ -8,7 +8,7 @@
 			cornerRadius: 0;
 		}
 	</style>
-	<code id="editor-content" width="100%" height="400" />
+	<code id="editor-content" width="100%" height="100%" />
 	<hbox width="100%" style="padding: 5; paddingLeft: 0; spacing: 5;">
 		<button text="Save to your computer" id="popup_save_button" styleName="tiny_btn" height="30" />
 		<button text="Load a file from your computer" id="popup_load_button" styleName="tiny_btn" height="30" />

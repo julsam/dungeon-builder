@@ -8,6 +8,7 @@ import haxe.ui.toolkit.controls.popups.Popup;
 import haxe.ui.toolkit.controls.Slider;
 import haxe.ui.toolkit.controls.TextInput;
 import haxe.ui.toolkit.core.PopupManager;
+import haxe.ui.toolkit.core.Screen;
 import haxe.ui.toolkit.core.XMLController;
 import haxe.ui.toolkit.events.UIEvent;
 
@@ -124,9 +125,9 @@ class PanelController extends XMLController
 		var config:Dynamic = { };
 		config.buttons = [importButton, PopupButton.CANCEL];
 		//config.modal = false;
-		config.width = 780;
-		config.height = 600;
-			
+		config.width = Screen.instance.width - 60;
+		config.height = Screen.instance.height - 100;
+		
 		PopupManager.instance.showCustom(codePopup.view, title, config, function (b) {
 			if (b == PopupButton.CUSTOM) {
 				// import button clicked, kind of hacky...
@@ -164,6 +165,9 @@ class CodePopup extends XMLController
 	{
 		super("assets/ui/editor.xml");
 		this.visualizer = visualizer;
+		
+		var editorContainer:VBox = getComponentAs("editor-container", VBox);
+		editorContainer.height = Screen.instance.height - 200;
 		
 		var editor:Code = getComponentAs("editor-content", Code);
 		if (type == "CSV") {
