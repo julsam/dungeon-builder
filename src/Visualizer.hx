@@ -5,11 +5,7 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
-import flash.events.ProgressEvent;
-import flash.net.FileReference;
-import flash.net.FileFilter;
 import flash.Lib;
-import flash.utils.ByteArray;
 import haxe.ui.toolkit.controls.extended.Code;
 import haxe.ui.toolkit.controls.Slider;
 import haxe.ui.toolkit.controls.Text;
@@ -42,7 +38,6 @@ class Visualizer extends Sprite
 	private var corridorBias:Int;
 	private var maxRooms:Int;
 	
-	private var uploadFileRef:FileReference;
 	private var nextBuild:BuildType;
 	public var mapDataASCII:String;
 	public var mapDataCSV:String;
@@ -59,10 +54,6 @@ class Visualizer extends Sprite
 			panel = new PanelController(this);
 			root.addChild(panel.view);
 		});
-		
-		uploadFileRef = new FileReference();
-		uploadFileRef.addEventListener(Event.SELECT, onFileSelected);
-		uploadFileRef.addEventListener(Event.COMPLETE, onFileLoaded);
 		
 		addEventListener(Event.ADDED_TO_STAGE, onAdded);
 	}
@@ -314,34 +305,9 @@ class Visualizer extends Sprite
 		Utils.scaleFromCenter(dungeonSprite, value, value);
 	}
 	
-	public function exportAsASCII():Void
-	{
-		mapDataASCII = panel.codePopup.getComponentAs("editor-content", Code).text;
-		mapDataASCII = StringTools.replace(mapDataASCII, "\r", "\n");
-		var file:FileReference = new FileReference();
-		file.save(mapDataASCII, Date.now().getTime() + ".txt");
-	}
-	
-	public function exportAsCSV():Void
-	{
-		mapDataCSV = panel.codePopup.getComponentAs("editor-content", Code).text;
-		mapDataCSV = StringTools.replace(mapDataCSV, "\r", "\n");
-		var file:FileReference = new FileReference();
-		file.save(mapDataCSV, Date.now().getTime() + ".csv");
-	}
-	
-	public function loadASCIIFile():Void
-	{
-		var fileFilter:FileFilter = new FileFilter("Text File", "*.txt");
-		uploadFileRef.browse([fileFilter]);
-	}
-	
-	public function loadCSVFile():Void
-	{
-		var fileFilter:FileFilter = new FileFilter("CSV File", "*.txt;*.csv");
-		uploadFileRef.browse([fileFilter]);
-	}
-	
+	/**
+	 * Get the content of the editor and load it into the dungeon visualizer.
+	 */
 	public function importASCIIMap():Void
 	{
 		mapDataASCII = panel.codePopup.getComponentAs("editor-content", Code).text;
@@ -354,6 +320,9 @@ class Visualizer extends Sprite
 		panel.getAs("corridorsCount", Text).text = "?";
 	}
 	
+	/**
+	 * Get the content of the editor and load it into the dungeon visualizer.
+	 */
 	public function importCSVMap():Void
 	{
 		mapDataCSV = panel.codePopup.getComponentAs("editor-content", Code).text;
@@ -364,19 +333,5 @@ class Visualizer extends Sprite
 		
 		panel.getAs("roomsCount", Text).text = "?";
 		panel.getAs("corridorsCount", Text).text = "?";
-	}
-	
-	private function onFileSelected(e:Event):Void
-	{
-		uploadFileRef.load();
-	}
-	
-	private function onFileLoaded(e:Event):Void
-	{
-		var byteArray:ByteArray = uploadFileRef.data;
-		var content:String = byteArray.readUTFBytes(byteArray.length);
-		
-		var code:Code = panel.codePopup.getComponentAs("editor-content", Code);
-		code.text = content;
 	}
 }

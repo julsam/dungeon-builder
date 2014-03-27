@@ -11,6 +11,7 @@ import haxe.ui.toolkit.core.PopupManager;
 import haxe.ui.toolkit.core.Screen;
 import haxe.ui.toolkit.core.XMLController;
 import haxe.ui.toolkit.events.UIEvent;
+import utils.FileManager;
 
 class PanelController extends XMLController
 {
@@ -110,15 +111,15 @@ class PanelController extends XMLController
 	
 	function onPopupASCII(e:UIEvent):Void
 	{
-		makePopup("ASCII", "Edit as ASCII", new PopupButtonInfo(PopupButton.CUSTOM, "Import this map", importMapASCII));
+		makePopup(FileType.ASCII, "Edit as ASCII", new PopupButtonInfo(PopupButton.CUSTOM, "Import this map", importMapASCII));
 	}
 	
 	function onPopupCSV(e:UIEvent):Void
 	{
-		makePopup("CSV", "Edit as CSV", new PopupButtonInfo(PopupButton.CUSTOM, "Import this map", importMapCSV));
+		makePopup(FileType.CSV, "Edit as CSV", new PopupButtonInfo(PopupButton.CUSTOM, "Import this map", importMapCSV));
 	}
 	
-	function makePopup(type:String, title:String, importButton:PopupButtonInfo):Void
+	function makePopup(type:FileType, title:String, importButton:PopupButtonInfo):Void
 	{
 		codePopup = new CodePopup(visualizer, type);
 		var config:Dynamic = { };
@@ -129,7 +130,7 @@ class PanelController extends XMLController
 		
 		PopupManager.instance.showCustom(codePopup.view, title, config, function (b) {
 			if (b == PopupButton.CUSTOM) {
-				// import button clicked, kind of hacky...
+				// when 'import' button is clicked, kind of hacky...
 				importButton.fn(null);
 			}
 		});
@@ -155,7 +156,7 @@ class CodePopup extends XMLController
 {
 	var visualizer:Visualizer;
 	
-	public function new(visualizer:Visualizer, type:String)
+	public function new(visualizer:Visualizer, type:FileType)
 	{
 		super("assets/ui/editor.xml");
 		this.visualizer = visualizer;
@@ -163,27 +164,29 @@ class CodePopup extends XMLController
 		var editorContainer:VBox = getComponentAs("editor-container", VBox);
 		editorContainer.height = Screen.instance.height - 200;
 		
+		// get the content into the editor
 		var editor:Code = getComponentAs("editor-content", Code);
-		if (type == "CSV") {
-			editor.text = visualizer.mapDataCSV;
-		} else {
-			editor.text = visualizer.mapDataASCII;
+		switch (type) {
+			case FileType.CSV: editor.text = visualizer.mapDataCSV;
+			case FileType.ASCII: editor.text = visualizer.mapDataASCII;
 		}
 		
+		// events for save & load buttons
 		getComponentAs("popup_save_button", Button).onClick = function (e) {
-			if (type == "CSV") {
-				visualizer.exportAsCSV();
-			} else {
-				visualizer.exportAsASCII();
-			}
+			FileManager.instance.saveFile(editor.text, type);
 		};
 		getComponentAs("popup_load_button", Button).onClick = function (e) {
-			if (type == "CSV") {
-				visualizer.loadCSVFile();
-			} else {
-				visualizer.loadASCIIFile();
-			}
+			FileManager.instance.loadFile(replaceEditorContent, type);
 		};
-		
+	}
+	
+	/**
+	 * Called when a file has finished loading, replace the content of the editor by the content of the file.
+	 * @param	content
+	 */
+	function replaceEditorContent(content:String):Void
+	{
+		var editor:Code = getComponentAs("editor-content", Code);
+		editor.text = content;
 	}
 }
