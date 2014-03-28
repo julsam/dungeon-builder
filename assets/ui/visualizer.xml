@@ -225,7 +225,7 @@
 				<scrollview width="100%" height="100%" styleName="tabScrollContainer">
 					<vbox>
 						
-						<expandablepanel width="100%" text="Algorithm #1 options" style="spacingY:5" startExpanded="true">
+						<expandablepanel width="100%" text="Generation Parameters" style="spacingY:5" startExpanded="true">
 							
 							<grid columns="2" styleName="small">
 								<text text="Map width:" />
@@ -236,11 +236,11 @@
 							</grid>
 							<grid columns="3" styleName="small">
 								<text text="Fail:" />
-								<hslider id="failSlider" pos="200" min="1" max="400" />
+								<hslider id="failSlider" pos="200" min="1" max="400" verticalAlign="center" />
 								<textinput id="failInput" text="200" styleName="numberInput" />
 								<!-- -->
 								<text text="Corridors:" />
-								<hslider id="corridorSlider" pos="5" min="0" max="100" />
+								<hslider id="corridorSlider" pos="5" min="0" max="100" verticalAlign="center" />
 								<textinput id="corridorInput" text="5" styleName="numberInput" />
 							</grid>
 							<grid columns="2" styleName="small">
@@ -252,6 +252,10 @@
 							
 							<button id="generateBtn_01"  text="GENERATE" width="80%" styleName="generateBtn" horizontalAlign="center" />
 							
+						</expandablepanel>
+						
+						<expandablepanel width="100%" text="More options" style="spacingY:5" startExpanded="false">
+							<Text text="placeholder" />
 						</expandablepanel>
 						
 						<expandablepanel width="100%" text="Stats" startExpanded="true">
@@ -299,7 +303,7 @@
 			<vbox id="tab_03" text="Algorithm #3" width="100%" height="100%">
 				<scrollview width="100%" height="100%" styleName="tabScrollContainer">
 					<vbox>
-						<expandablepanel width="100%" text="Panel 1" style="spacingY:5" startExpanded="false">
+						<expandablepanel width="100%" text="Generation Parameters" style="spacingY:5" startExpanded="true">
 							<button text="Button 1" />
 							<button text="Button 2" />
 							<button text="Button 3" />
