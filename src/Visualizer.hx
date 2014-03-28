@@ -14,6 +14,9 @@ import haxe.ui.toolkit.core.Macros;
 import haxe.ui.toolkit.core.Root;
 import haxe.ui.toolkit.core.Toolkit;
 import haxe.ui.toolkit.events.UIEvent;
+import haxe.ui.toolkit.style.Style;
+import haxe.ui.toolkit.style.StyleManager;
+import openfl.Assets;
 
 enum BuildType {
 	GEN;
@@ -49,6 +52,8 @@ class Visualizer extends Sprite
 		super();
 		
 		Macros.addStyleSheet("assets/ui/style.css");
+		var f = Assets.getFont("assets/fonts/Roboto-Regular.ttf");
+		StyleManager.instance.addStyle("#title", new Style( { fontName: f.fontName, fontEmbedded: true } ));
         Toolkit.init();
         Toolkit.openFullscreen(function(root:Root) {
 			panel = new PanelController(this);
