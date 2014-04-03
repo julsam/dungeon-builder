@@ -1,6 +1,7 @@
 package ;
 
 import dungeons.MiscDungeonGenerator;
+import DungeonManager.DungeonAlgorithm;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
@@ -92,19 +93,16 @@ class Visualizer extends Sprite
 	
 	public function generateNewDungeon():Void
 	{
-		createDungeonBitmap();
-	}
-	
-	public function createDungeonBitmap():Void
-	{
-		if (dungeonSprite.numChildren >= 1) {
-			dungeonSprite.removeChildAt(0);
-		}
+		// 1. Choose the algorithm to use
+		DungeonManager.instance.create(DungeonAlgorithm.MISC_ALGO);
 		
-		var bd:BitmapData = new BitmapData(80, 80);
+		// 2. Generate dungeon with default options
+		DungeonManager.instance.generate();
 		
-		var bitmap:Bitmap = new Bitmap(bd);
-		dungeonSprite.addChild(bitmap);
+		// 3. display the dungeon map
+		var options:MiscDungeonOptions = DungeonManager.instance.generatedDungeon.defaultOptions;
+		var bd:BitmapData = new BitmapData(options.mapWidth, options.mapHeight);
+		buildMap(options.mapWidth, options.mapHeight, DungeonManager.instance.currentDungeon);
 	}
 	
 	public function createBitmap(bd:BitmapData):Void
@@ -112,7 +110,6 @@ class Visualizer extends Sprite
 		if (dungeonSprite.numChildren >= 1) {
 			dungeonSprite.removeChildAt(0);
 		}
-		
 		var bitmap:Bitmap = new Bitmap(bd);
 		dungeonSprite.addChild(bitmap);
 	}

@@ -43,7 +43,7 @@ class DungeonManager
 	
 	private static var miscTranslationTable:TranslationTable = { plainText: ['.', ' ', '#', '=', '=', '~'], csv: [0, 1, 2, 3, 4, 5] };
 	
-	private var generatedDungeon(default, null):IDungeonWrapper;
+	public var generatedDungeon(default, null):IDungeonWrapper;
 	private var importedDungeon(default, null):Array<Array<Dynamic>>;
 	
 	private var currentAlgorithm(default, null):DungeonAlgorithm;
