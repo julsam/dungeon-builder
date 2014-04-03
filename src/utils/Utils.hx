@@ -1,4 +1,5 @@
-package ;
+package utils;
+
 import flash.Lib;
 import flash.net.URLRequest;
 
@@ -95,5 +96,63 @@ class Utils
 			else if (value > min) return min;
 			else return value;
 		}
+	}
+	
+	/**
+	 * Conversion from a CSV string to a 2d array
+	 */
+	public static function csv2array(csv:String):Array<Array<Int>>
+	{
+		return [for (el in csv.split('\n')) el.split(',').map(function(e) return Std.parseInt(e))];
+	}
+	
+	/**
+	 * Conversion from a ASCII string to a 2d array
+	 */
+	public static function ascii2array(ascii:String):Array<Array<String>>
+	{
+		return [for (el in ascii.split('\n')) el.split('')];
+	}
+	
+	/**
+	 * Conversion from a 2d array to a CSV string
+	 */
+	public static function array2csv(array2d:Array<Array<Dynamic>>):String
+	{
+		var str = "";
+		for (y in 0...array2d.length)
+		{
+			var colLength = array2d[y].length;
+			for (x in 0...colLength)
+			{
+				str += array2d[y][x];
+				if (x < colLength - 1) {
+					 str += ",";
+				}
+			}
+			if (y < array2d.length - 1) {
+				str += '\n';
+			}
+		}
+		return str;
+	}
+	
+	/**
+	 * Conversion from a 2d array to a ASCII string
+	 */
+	public static function array2ascii(array2d:Array<Array<Dynamic>>):String
+	{
+		var str = "";
+		for (y in 0...array2d.length)
+		{
+			var colLength = array2d[y].length;
+			for (x in 0...colLength) {
+				str += array2d[y][x];
+			}
+			if (y < array2d.length - 1) {
+				str += '\n';
+			}
+		}
+		return str;
 	}
 }

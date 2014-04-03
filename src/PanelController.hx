@@ -1,23 +1,28 @@
 package;
 
+import dungeons.MiscDungeonGenerator;
+import flash.display.BitmapData;
 import haxe.ui.toolkit.containers.TabView;
 import haxe.ui.toolkit.containers.VBox;
 import haxe.ui.toolkit.controls.Button;
 import haxe.ui.toolkit.controls.extended.Code;
 import haxe.ui.toolkit.controls.popups.Popup;
 import haxe.ui.toolkit.controls.Slider;
+import haxe.ui.toolkit.controls.Text;
 import haxe.ui.toolkit.controls.TextInput;
 import haxe.ui.toolkit.core.PopupManager;
 import haxe.ui.toolkit.core.Screen;
 import haxe.ui.toolkit.core.XMLController;
 import haxe.ui.toolkit.events.UIEvent;
 import utils.FileManager;
+import utils.Utils;
 
 class PanelController extends XMLController
 {
 	var visualizer:Visualizer;
 	var tabview:TabView;
 	var tab1:VBox;
+	var tab2:VBox;
 	
 	public var codePopup(default, null):CodePopup;
 	public var zoomSlider(default, null):Slider;
@@ -32,8 +37,8 @@ class PanelController extends XMLController
 		getComponentAs("gotoSourceCode", Button).onClick = onClickButton;
 		zoomSlider = getComponentAs("zoomSlider", Slider);
 		zoomSlider.onChange = onSliderChange;
-		//attachEvent()
 		
+		// TAB 1
 		tab1 = getComponentAs("tab_01", VBox);
 		tab1.findChild("generateBtn_01", Button, true).onClick = onClickButton;
 		tab1.findChild("popupCSV", Button, true).onClick = onPopupCSV;
@@ -44,15 +49,18 @@ class PanelController extends XMLController
 		tab1.findChild("corridorInput", TextInput, true).onChange = onSliderInputChange;
 		
 		
-		var tab2:VBox = getComponentAs("tab_02", VBox);
-		//tab2.findChild("generateBtn_01", Button, true).onClick = parentClass.onClickButton;
-		
+		// TAB 2
+		tab2 = getComponentAs("tab_02", VBox);
+		//tab2.findChild("generateBtn_02", Button, true).onClick = parentClass.onClickButton;
 	}
 	
 	public function getAs<T>(id:String, type:Class<T>):Null<T>
 	{
 		if (tabview.selectedIndex == 0) {
 			return tab1.findChild(id, type, true);
+		}
+		else if (tabview.selectedIndex == 1) {
+			return tab2.findChild(id, type, true);
 		}
 		return null;
 	}
@@ -68,8 +76,47 @@ class PanelController extends XMLController
 	{
 		var button = e.getComponentAs(Button);
 		
-		if (button.id == "generateBtn_01") {
-			visualizer.generateNewDungeon();
+		if (button.id == "generateBtn_01")
+		{
+			// 1. Choose the algorithm to use
+			DungeonManager.instance.create(MISC_ALGO);
+			
+			var options:MiscDungeonOptions = { };
+			
+			// get width
+			var mapWidth:TextInput = getAs("mapWidth", TextInput);
+			options.mapWidth = Std.int(Utils.clamp(Std.parseInt(mapWidth.text), 20, 500));
+			mapWidth.text = Std.string(options.mapWidth);
+			
+			// get height
+			var mapHeight:TextInput = getAs("mapHeight", TextInput);
+			options.mapHeight = Std.int(Utils.clamp(Std.parseInt(mapHeight.text), 20, 500));
+			mapHeight.text = Std.string(options.mapHeight);
+			
+			// get fail
+			options.fail = Std.int(getAs("failSlider", Slider).value);
+			
+			// get corridor bias
+			options.corridorBias = Std.int(getAs("corridorSlider", Slider).value);
+			
+			// max rooms
+			var inputMaxRooms:TextInput = getAs("maxRooms", TextInput);
+			options.maxRooms = Std.int(Utils.clamp(Std.parseInt(inputMaxRooms.text), 3, 5000));
+			inputMaxRooms.text = Std.string(options.maxRooms);
+			
+			// 2. Generate dungeon with given options
+			DungeonManager.instance.generate(options);
+			
+			// Update UI infos
+			//getAs("roomsCount", Text).text = Std.string(DungeonManager.instance.currentDungeon.roomList.length);
+			//getAs("corridorsCount", Text).text = Std.string(DungeonManager.instance.currentDungeon.cList.length);
+			
+			// Build
+			var map = null;
+			var bd:BitmapData = new BitmapData(options.mapWidth, options.mapWidth);
+			
+			// 3. display the dungeon map
+			visualizer.buildMap(options.mapWidth, options.mapWidth, DungeonManager.instance.currentDungeon);
 		}
 		
 		if (button.id == "gotoSourceCode") {
@@ -111,12 +158,14 @@ class PanelController extends XMLController
 	
 	function onPopupASCII(e:UIEvent):Void
 	{
-		makePopup(FileType.ASCII, "Edit as ASCII", new PopupButtonInfo(PopupButton.CUSTOM, "Import this map", importMapASCII));
+		var popupButtonInfo = new PopupButtonInfo(PopupButton.CUSTOM, "Import this map", importMapASCII);
+		makePopup(FileType.ASCII, "Edit as ASCII", popupButtonInfo);
 	}
 	
 	function onPopupCSV(e:UIEvent):Void
 	{
-		makePopup(FileType.CSV, "Edit as CSV", new PopupButtonInfo(PopupButton.CUSTOM, "Import this map", importMapCSV));
+		var popupButtonInfo = new PopupButtonInfo(PopupButton.CUSTOM, "Import this map", importMapCSV);
+		makePopup(FileType.CSV, "Edit as CSV", popupButtonInfo);
 	}
 	
 	function makePopup(type:FileType, title:String, importButton:PopupButtonInfo):Void
@@ -138,12 +187,30 @@ class PanelController extends XMLController
 	
 	function importMapASCII(e:UIEvent):Void
 	{
-		visualizer.importASCIIMap();
+		var mapDataASCII:String = codePopup.getComponentAs("editor-content", Code).text;
+		mapDataASCII = StringTools.replace(mapDataASCII, "\r", "\n");
+		var arrayMap = Utils.ascii2array(mapDataASCII);
+		
+		DungeonManager.instance.importDungeon(arrayMap);
+		
+		visualizer.buildMap(arrayMap[0].length, arrayMap.length, DungeonManager.instance.currentDungeon);
+		
+		getAs("roomsCount", Text).text = "?";
+		getAs("corridorsCount", Text).text = "?";
 	}
 	
 	function importMapCSV(e:UIEvent):Void
 	{
-		visualizer.importCSVMap();
+		var mapDataCSV:String = codePopup.getComponentAs("editor-content", Code).text;
+		mapDataCSV = StringTools.replace(mapDataCSV, "\r", "\n");
+		var arrayMap = Utils.csv2array(mapDataCSV);
+		
+		DungeonManager.instance.importDungeon(arrayMap);
+		
+		visualizer.buildMap(arrayMap[0].length, arrayMap.length, DungeonManager.instance.currentDungeon);
+		
+		getAs("roomsCount", Text).text = "?";
+		getAs("corridorsCount", Text).text = "?";
 	}
 	
 	function gotoSourceCode():Void
@@ -167,8 +234,10 @@ class CodePopup extends XMLController
 		// get the content into the editor
 		var editor:Code = getComponentAs("editor-content", Code);
 		switch (type) {
-			case FileType.CSV: editor.text = visualizer.mapDataCSV;
-			case FileType.ASCII: editor.text = visualizer.mapDataASCII;
+			case FileType.CSV:
+				editor.text = DungeonManager.instance.getTextReady(FileType.CSV);
+			case FileType.ASCII:
+				editor.text = DungeonManager.instance.getTextReady(FileType.ASCII);
 		}
 		
 		// events for save & load buttons
@@ -182,7 +251,7 @@ class CodePopup extends XMLController
 	
 	/**
 	 * Called when a file has finished loading, replace the content of the editor by the content of the file.
-	 * @param	content
+	 * @param	content     Content of the file.
 	 */
 	function replaceEditorContent(content:String):Void
 	{
