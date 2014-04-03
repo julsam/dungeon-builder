@@ -107,16 +107,13 @@ class PanelController extends XMLController
 			// 2. Generate dungeon with given options
 			DungeonManager.instance.generate(options);
 			
-			// Update UI infos
-			//getAs("roomsCount", Text).text = Std.string(DungeonManager.instance.currentDungeon.roomList.length);
-			//getAs("corridorsCount", Text).text = Std.string(DungeonManager.instance.currentDungeon.cList.length);
+			// 3. Update UI infos
+			getAs("roomsCount", Text).text = Std.string(DungeonManager.instance.generatedDungeon.roomCount);
+			getAs("corridorsCount", Text).text = Std.string(DungeonManager.instance.generatedDungeon.corridorCount);
 			
-			// Build
-			var map = null;
-			var bd:BitmapData = new BitmapData(options.mapWidth, options.mapWidth);
-			
-			// 3. display the dungeon map
-			visualizer.buildMap(options.mapWidth, options.mapWidth, DungeonManager.instance.currentDungeon);
+			// 4. display the dungeon map
+			var bd:BitmapData = new BitmapData(options.mapWidth, options.mapHeight);
+			visualizer.buildMap(options.mapWidth, options.mapHeight, DungeonManager.instance.currentDungeon);
 		}
 		
 		if (button.id == "gotoSourceCode") {

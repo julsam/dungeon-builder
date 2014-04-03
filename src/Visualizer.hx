@@ -99,7 +99,11 @@ class Visualizer extends Sprite
 		// 2. Generate dungeon with default options
 		DungeonManager.instance.generate();
 		
-		// 3. display the dungeon map
+		// 3. Update UI infos
+		panel.getAs("roomsCount", Text).text = Std.string(DungeonManager.instance.generatedDungeon.roomCount);
+		panel.getAs("corridorsCount", Text).text = Std.string(DungeonManager.instance.generatedDungeon.corridorCount);
+		
+		// 4. display the dungeon map
 		var options:MiscDungeonOptions = DungeonManager.instance.generatedDungeon.defaultOptions;
 		var bd:BitmapData = new BitmapData(options.mapWidth, options.mapHeight);
 		buildMap(options.mapWidth, options.mapHeight, DungeonManager.instance.currentDungeon);

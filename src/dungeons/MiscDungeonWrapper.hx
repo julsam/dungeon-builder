@@ -6,6 +6,7 @@ class MiscDungeonWrapper implements IDungeonWrapper
 	public var defaultOptions(default, null):Dynamic;
 	
 	public var roomCount(default, null):Int;
+	public var corridorCount(default, null):Int;
 	
 	var dungeonBuild:MiscDungeonGenerator;
 	
@@ -33,9 +34,11 @@ class MiscDungeonWrapper implements IDungeonWrapper
 		{
 			options = defaultOptions;
 		}
-		//trace(options);
 		
 		dungeonBuild.generate(options.mapWidth, options.mapHeight, options.fail, options.corridorBias, options.maxRooms);
+		
+		this.corridorCount = dungeonBuild.cList.length;
+		this.roomCount = dungeonBuild.roomList.length;
 	}
 	
 	public function print():Void 
