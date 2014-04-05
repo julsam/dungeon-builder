@@ -3,7 +3,7 @@ It's an Haxe port of the Dungeon builder written in python by Steve Wallace. See
 It builds a dungeon procedurally generated with rooms, corridors, and doors. 
 
 ## Try the demo 
-https://dl.dropboxusercontent.com/u/100579483/dungeon-builder/DungeonBuilder.swf
+https://dl.dropboxusercontent.com/u/100579483/dungeon-builder/DungeonBuilder-2.swf
 	
 
 Read DungeonBuilder.hx for more informations. It doesn't require any particular library to run and can easily be incorporated in your project. It only require Utils.hx  
