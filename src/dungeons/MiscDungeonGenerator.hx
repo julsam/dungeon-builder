@@ -131,10 +131,14 @@ class MiscDungeonGenerator
 		var failed:Int = 0;
 		while (failed < fail) // The lower the fail value, the smaller the dungeon
 		{
-			var chooseRoom = Utils.randrange(0, roomList.length);
+			var exit:ExitData = null;
+			while (exit == null)			
+			{
+				// make room exit
+				var chooseRoom = Utils.randrange(0, roomList.length);
+				exit = makeExit(chooseRoom);
+			}
 			
-			// make room exit
-			var exit:ExitData = makeExit(chooseRoom);
 			var exitX:Int = exit.wallX,
 			    exitY:Int = exit.wallY,
 			    exitX2:Int = exit.outsideX,
@@ -353,7 +357,8 @@ class MiscDungeonGenerator
 		var room = roomList[rn];
 		var rx:Int = 0, ry:Int = 0, rx2:Int = 0, ry2:Int = 0;
 		var rw:Int = 0;
-		while (true) {
+		var fail:Int = 0;
+		while (fail < 200) {
 			rw = Utils.randrange(0, 4);
 			if (rw == 0) { // North wall
 				rx = Utils.randrange(0, room[1]) + room[2];	// random x position on the north wall
@@ -379,8 +384,14 @@ class MiscDungeonGenerator
 			if (mapArr[ry][rx] == 2) { // if space is a wall, exit the loop
 				break;
 			}
+			fail++;
 		}
-		return { wallX : rx, wallY : ry, outsideX : rx2, outsideY : ry2, heading : rw }
+		
+		if (fail == 200) {
+			return null;
+		} else {
+			return { wallX : rx, wallY : ry, outsideX : rx2, outsideY : ry2, heading : rw }
+		}
 	}
 	
 	/**
