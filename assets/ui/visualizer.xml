@@ -47,7 +47,7 @@
 		
 		TabView Stack {
 			padding: 0;
-			backgroundColor: 0xfcf8e2;;
+			backgroundColor: 0xfcf8e2;
 		}
 		
 		ScrollView {
@@ -62,6 +62,10 @@
 			width: 100%;
 			borderSize: 0;
 			cornerRadius: 0;
+		}
+		
+		.tabScrollContainer #container {
+			backgroundColor: 0xfcf8e2;
 		}
 		
 		Grid {
