@@ -41,11 +41,6 @@ class MiscDungeonWrapper implements IDungeonWrapper
 		this.roomCount = dungeonBuild.roomList.length;
 	}
 	
-	public function print():Void 
-	{
-		
-	}
-	
 	/**
 	 * Get a copy of the internal representation of the map. (here it's a 2d array)
 	 * @return  Copied array.
