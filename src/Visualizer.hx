@@ -147,6 +147,12 @@ class Visualizer extends Sprite
 				else if (mapData[y][x] == '~') { // secret door
 					bd.setPixel(x, y, 0xeb970f);
 				}
+				else if (mapData[y][x] == '<') { // stairs up
+					bd.setPixel(x, y, 0x3d8e3d);
+				}
+				else if (mapData[y][x] == '>') { // stairs down
+					bd.setPixel(x, y, 0x3d8e3d);
+				}
 			}
 		}
 		createBitmap(bd);

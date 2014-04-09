@@ -8,7 +8,7 @@ interface IDungeonWrapper
 	public var roomCount(default, null):Int;
 	public var corridorCount(default, null):Int;
 	
-	private var dungeonBuild:MiscDungeonGenerator; // TODO replace with IDungeonGenerator when it's done
+	//private var dungeonBuild:MiscDungeonGenerator; // TODO replace with IDungeonGenerator when it's done
 	
 	public function generate(options:Dynamic=null):Void;
 	public function getRawMap():Dynamic;

@@ -1,13 +1,14 @@
 package ;
 
 import DungeonManager.DungeonAlgorithm;
+import dungeons.EDCDungeonWrapper;
 import dungeons.IDungeonWrapper;
 import dungeons.MiscDungeonWrapper;
 import utils.FileManager.FileType;
 import utils.Utils;
 
 enum DungeonAlgorithm {
-	ALGO_1;    // temp
+	EDC_ALGO;
 	MISC_ALGO;
 	NULL;
 }
@@ -42,6 +43,19 @@ class DungeonManager
 	//******************************************************************************************
 	
 	private static var miscTranslationTable:TranslationTable = { plainText: ['.', ' ', '#', '=', '=', '~'], csv: [0, 1, 2, 3, 4, 5] };
+	private static var edcTranslationTable:TranslationTable = { plainText: ['.', ' ', '#', '=', '>', '<'], csv: [0, 1, 2, 3, 4, 5] };
+	
+	private var currentTranslationTable(get, null):TranslationTable;
+	function get_currentTranslationTable()
+	{
+		switch (currentAlgorithm)
+		{
+			case MISC_ALGO:
+				return miscTranslationTable;
+			default: // EDC_ALGO
+				return edcTranslationTable;
+		}
+	}
 	
 	public var generatedDungeon(default, null):IDungeonWrapper;
 	private var importedDungeon(default, null):Array<Array<Dynamic>>;
@@ -76,11 +90,12 @@ class DungeonManager
 		reset();
 		switch (algorithm)
 		{
-			case ALGO_1:
-			default:
-				generatedDungeon = new MiscDungeonWrapper();
 			case MISC_ALGO:
+				currentAlgorithm = MISC_ALGO;
 				generatedDungeon = new MiscDungeonWrapper();
+			default: // EDC_ALGO
+				currentAlgorithm = EDC_ALGO;
+				generatedDungeon = new EDCDungeonWrapper();
 		}
 	}
 	
@@ -105,18 +120,14 @@ class DungeonManager
 		if (ftype.equals(FileType.CSV))
 		{	
 			if (generatedDungeon != null) {
-				return Utils.array2csv(generatedDungeon.getRawMap());
+				return Utils.array2csv(getCsvReady(generatedDungeon.getRawMap()));
 			} else {
-				//var converted = currentDungeon.conversionInverted();
-				//return Utils.array2csv(converted);
 				return Utils.array2csv(getCsvReady(importedDungeon));
 			}
 		}
 		else
 		{
 			if (generatedDungeon != null) {
-				//var converted = generatedDungeon.converted();
-				//return Utils.array2ascii(converted);
 				return Utils.array2ascii(getPlainTextReady(generatedDungeon.getRawMap()));
 			} else {
 				return Utils.array2ascii(getPlainTextReady(importedDungeon));
@@ -147,10 +158,10 @@ class DungeonManager
 			for (x in 0...col)
 			{
 				var char:String = source[y][x];
-				var table = miscTranslationTable.plainText;
+				var table = currentTranslationTable.plainText;
 				for (i in 0...table.length ) {
 					if (char == table[i]) {
-						colArray.push(miscTranslationTable.csv[i]);
+						colArray.push(currentTranslationTable.csv[i]);
 						break;
 					}
 				}
@@ -183,10 +194,10 @@ class DungeonManager
 			for (x in 0...col)
 			{
 				var char:Int = source[y][x];
-				var table = miscTranslationTable.csv;
+				var table = currentTranslationTable.csv;
 				for (i in 0...table.length ) {
 					if (char == table[i]) {
-						colArray.push(miscTranslationTable.plainText[i]);
+						colArray.push(currentTranslationTable.plainText[i]);
 						break;
 					}
 				}

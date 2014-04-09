@@ -127,6 +127,15 @@
 			height: 20;
 		}
 		
+		.tinyNumberInput {
+			width: 20;
+			height: 20;
+		}
+		
+		.smallHSlider {
+			width: 85;
+		}
+		
 		.black {
 			backgroundColor: 0x302f2d;
 			color: 0xeeeeee;
@@ -149,6 +158,11 @@
 		
 		.orange {
 			backgroundColor: 0xeb960e;
+			color: 0xffffff;
+		}
+		
+		.green {
+			backgroundColor: 0x5CB85C;
 			color: 0xffffff;
 		}
 		
@@ -218,6 +232,10 @@
 		ExpandablePanel #content {
 			padding: 5;
 			spacing: 5;
+		}
+		
+		HSlider #thumb {
+			
 		}
 	</style>
 
@@ -298,7 +316,73 @@
 			<vbox id="tab_02" text="Algorithm #2" width="100%" height="100%">
 				<scrollview width="100%" height="100%" styleName="tabScrollContainer">
 					<vbox>
-						<button text="Button 5" id="generateBtn_01" />
+						
+						<expandablepanel width="100%" text="Generation Parameters" style="spacingY:5" startExpanded="true">
+							
+							<grid columns="3" styleName="small" style="padding: 0;">
+								<text text="X cells amount:" />
+								<hslider id="cellsXSlider" pos="5" min="1" max="20" verticalAlign="center" styleName="smallHSlider" />
+								<textinput id="cellsX" text="5" styleName="tinyNumberInput" />
+								
+								<text text="Y cells amount:" />
+								<hslider id="cellsYSlider" pos="5" min="1" max="20" verticalAlign="center" styleName="smallHSlider" />
+								<textinput id="cellsY" text="5" styleName="tinyNumberInput" />
+								
+								<text text="Cell size:" />
+								<hslider id="cellSizeSlider" pos="8" min="3" max="20" verticalAlign="center" styleName="smallHSlider" />
+								<textinput id="cellSize" text="8" styleName="tinyNumberInput" />
+								
+								<text text="Min room size:" />
+								<hslider id="minRoomSizeSlider" pos="3" min="3" max="8" verticalAlign="center" styleName="smallHSlider" />
+								<textinput id="minRoomSize" text="3" styleName="tinyNumberInput" />
+								
+								<text text="Max room size:" />
+								<hslider id="maxRoomSizeSlider" pos="8" min="3" max="8" verticalAlign="center" styleName="smallHSlider" />
+								<textinput id="maxRoomSize" text="8" styleName="tinyNumberInput" />
+							</grid>
+							
+							<hbox width="200" styleName="small">
+								<Text width="100%" text="Be careful, this generation is CPU intensive. Big or even medium values could have impacts on the generation speed." wrapLines="true" />
+							</hbox>
+						
+							<Spacer height="2" />
+							
+							<button id="generateBtn_02"  text="GENERATE" width="80%" styleName="generateBtn" horizontalAlign="center" />
+							
+						</expandablepanel>
+						
+						<expandablepanel width="100%" text="More options" style="spacingY:5" startExpanded="false">
+							<Text text="placeholder" />
+						</expandablepanel>
+						
+						<expandablepanel width="100%" text="Stats" startExpanded="true">
+							<grid columns="2" styleName="small">
+								<Text text="Number of rooms : " /><Text id="roomsCount" text="?" styleName="black" />
+								<Text text="Number of corridors : " /><Text id="corridorsCount" text="?" styleName="black" />
+							</grid>
+						</expandablepanel>
+						
+						<expandablepanel width="100%" text="Export / Import" startExpanded="true">
+							<grid columns="2" style="spacing: 1; padding: 0">
+								<button id="popupASCII" width="100" text="ASCII" styleName="tiny_btn" />
+								<button id="popupCSV" width="100" text="CSV" styleName="tiny_btn" />
+							</grid>
+						</expandablepanel>
+						
+						<expandablepanel width="100%" text="Help" startExpanded="false">
+							
+							<grid columns="3" styleName="small">
+								<Text text="White" styleName="white" /><Text text=" = " /><Text text="walkable tiles" />
+								<Text text="Red" styleName="red" /><Text text=" = " /><Text text="walls" />
+								<Text text="Blue" styleName="blue" /><Text text=" = " /><Text text="doors" />
+								<Text text="Green" styleName="green" /><Text text=" = " /><Text text="Stairs up & down" />
+							</grid>
+						
+							<hbox width="200" styleName="small">
+								<Text width="100%" wrapLines="true" text="You can drag the map around with your mouse and zoom-in or out with your mouse wheel or with the slider at the top." />
+							</hbox>
+						</expandablepanel>
+						
 					</vbox>
 				</scrollview>
 			</vbox>

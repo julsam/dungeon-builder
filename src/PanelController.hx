@@ -51,7 +51,21 @@ class PanelController extends XMLController
 		
 		// TAB 2
 		tab2 = getComponentAs("tab_02", VBox);
-		//tab2.findChild("generateBtn_02", Button, true).onClick = parentClass.onClickButton;
+		tab2.findChild("generateBtn_02", Button, true).onClick = onClickButton;
+		tab2.findChild("popupCSV", Button, true).onClick = onPopupCSV;
+		tab2.findChild("popupASCII", Button, true).onClick = onPopupASCII;
+		
+		tab2.findChild("cellsXSlider", Slider, true).onChange = onSliderChange;
+		tab2.findChild("cellsYSlider", Slider, true).onChange = onSliderChange;
+		tab2.findChild("cellSizeSlider", Slider, true).onChange = onSliderChange;
+		tab2.findChild("minRoomSizeSlider", Slider, true).onChange = onSliderChange;
+		tab2.findChild("maxRoomSizeSlider", Slider, true).onChange = onSliderChange;
+		
+		tab2.findChild("cellsX", TextInput, true).onChange = onSliderInputChange;
+		tab2.findChild("cellsY", TextInput, true).onChange = onSliderInputChange;
+		tab2.findChild("cellSize", TextInput, true).onChange = onSliderInputChange;
+		tab2.findChild("minRoomSize", TextInput, true).onChange = onSliderInputChange;
+		tab2.findChild("maxRoomSize", TextInput, true).onChange = onSliderInputChange;
 	}
 	
 	public function getAs<T>(id:String, type:Class<T>):Null<T>
@@ -112,8 +126,51 @@ class PanelController extends XMLController
 			getAs("corridorsCount", Text).text = Std.string(DungeonManager.instance.generatedDungeon.corridorCount);
 			
 			// 4. display the dungeon map
-			var bd:BitmapData = new BitmapData(options.mapWidth, options.mapHeight);
 			visualizer.buildMap(options.mapWidth, options.mapHeight, DungeonManager.instance.currentDungeon);
+		}
+		
+		if (button.id == "generateBtn_02")
+		{
+			// 1. Choose the algorithm to use
+			DungeonManager.instance.create(EDC_ALGO);
+			
+			var options:Dynamic = { };
+			
+			// get horizontal amount of cells
+			options.cellsX = Std.int(getAs("cellsXSlider", Slider).value);
+			
+			// get vertical amount of cells
+			options.cellsY = Std.int(getAs("cellsYSlider", Slider).value);
+			
+			// get cells size
+			options.cellSize = Std.int(getAs("cellSizeSlider", Slider).value);
+			
+			// get min room size
+			options.minRoomSize = Std.int(getAs("minRoomSizeSlider", Slider).value);
+			
+			// get max room size
+			options.maxRoomSize = Std.int(getAs("maxRoomSizeSlider", Slider).value);
+			
+			// 2. Generate dungeon with given options
+			try {
+				DungeonManager.instance.generate(options);
+			} catch (e:Dynamic) {
+				var config:Dynamic = { };
+				config.buttons = [PopupButton.OK];
+				config.width = 600;
+				config.height = 400;
+				PopupManager.instance.showSimple("Sorry it crashed with this error :\n\n\"" + e + "\"\n\nTry again with smaller numbers maybe ?\n\n", "Crash", config);
+				return;
+			}
+			
+			// 3. Update UI infos
+			getAs("roomsCount", Text).text = Std.string(DungeonManager.instance.generatedDungeon.roomCount);
+			getAs("corridorsCount", Text).text = Std.string(DungeonManager.instance.generatedDungeon.corridorCount);
+			
+			// 4. display the dungeon map
+			var width = Std.int(options.cellsX * options.cellSize);
+			var height = Std.int(options.cellsY * options.cellSize);
+			visualizer.buildMap(width, height, DungeonManager.instance.currentDungeon);
 		}
 		
 		if (button.id == "gotoSourceCode") {
@@ -125,6 +182,8 @@ class PanelController extends XMLController
 	{
 		var slider:Slider = e.getComponentAs(Slider);
 		
+		/* TAB 01 */
+		
 		// if failSlider -> update failInput
 		if (slider.id == "failSlider") {
 			getComponentAs("failInput", TextInput).text = slider.value;
@@ -133,6 +192,51 @@ class PanelController extends XMLController
 		if (slider.id == "corridorSlider") {
 			getComponentAs("corridorInput", TextInput).text = slider.value;
 		}
+		
+		/* TAB 02 */
+		
+		// if cellsXSlider -> update cellsX
+		if (slider.id == "cellsXSlider") {
+			getComponentAs("cellsX", TextInput).text = slider.value;
+		}
+		// if cellsYSlider -> update cellsY
+		if (slider.id == "cellsYSlider") {
+			getComponentAs("cellsY", TextInput).text = slider.value;
+		}
+		if (slider.id == "cellSizeSlider")
+		{
+			// update the text input
+			getComponentAs("cellSize", TextInput).text = slider.value;
+			
+			// update siblings sliders
+			if (slider.value >= 10)
+			{
+				var cellsXSlider = getComponentAs("cellsXSlider", Slider);
+				updateSliderMaxValue(cellsXSlider, 8 + 20 - slider.value);
+				var cellsYSlider = getComponentAs("cellsYSlider", Slider);
+				updateSliderMaxValue(cellsYSlider, 8 + 20 - slider.value);
+			}
+			else
+			{
+				getComponentAs("cellsXSlider", Slider).max = 20;
+				getComponentAs("cellsYSlider", Slider).max = 20;
+			}
+			
+			// update min & max room so they don't overlap this slider's max value
+			var maxRoomSlider = getComponentAs("maxRoomSizeSlider", Slider);
+			updateSliderMaxValue(maxRoomSlider, slider.value);
+			var minRoomSlider = getComponentAs("minRoomSizeSlider", Slider);
+			updateSliderMaxValue(minRoomSlider, slider.value);
+		}
+		if (slider.id == "minRoomSizeSlider") {
+			getComponentAs("minRoomSize", TextInput).text = slider.value;
+		}
+		if (slider.id == "maxRoomSizeSlider") {
+			getComponentAs("maxRoomSize", TextInput).text = slider.value;
+		}
+		
+		/* OTHER */
+		
 		// if zoom -> update scale
 		if (slider.id == "zoomSlider") {
 			visualizer.changeScale(slider.value);
@@ -143,6 +247,8 @@ class PanelController extends XMLController
 	{
 		var textinput:TextInput = e.getComponentAs(TextInput);
 		
+		/* TAB 01 */
+		
 		// if failInput -> update failSlider
 		if (textinput.id == "failInput") {
 			getComponentAs("failSlider", Slider).value = textinput.text;
@@ -150,6 +256,62 @@ class PanelController extends XMLController
 		// if corridorInput -> update corridorSlider
 		if (textinput.id == "corridorInput") {
 			getComponentAs("corridorSlider", Slider).value = textinput.text;
+		}
+		
+		/* TAB 02 */
+		
+		// if cellsX input -> update cellsXSlider
+		if (textinput.id == "cellsX") {
+			getComponentAs("cellsXSlider", Slider).value = textinput.text;
+		}
+		// if cellsY input -> update cellsYSlider
+		if (textinput.id == "cellsY") {
+			getComponentAs("cellsYSlider", Slider).value = textinput.text;
+		}
+		if (textinput.id == "cellSize") {
+			getComponentAs("cellSizeSlider", Slider).value = textinput.text;
+		}
+		if (textinput.id == "minRoomSize") {
+			getComponentAs("minRoomSizeSlider", Slider).value = textinput.text;
+		}
+		if (textinput.id == "maxRoomSize") {
+			getComponentAs("maxRoomSizeSlider", Slider).value = textinput.text;
+		}
+	}
+	
+	function updateSliderMaxValue(slider:Slider, value:Float):Void
+	{
+		slider.max = value;
+		if (slider.pos > slider.max) {
+			slider.pos = slider.max;
+		}
+	}
+	
+	/**
+	 * TODO: remove if not used.
+	 */
+	function updateSliderSiblings(availableTotal:Int, callerValue:Float, slidersName:Array<String>):Void
+	{
+		var slidersList:Array<Slider> = new Array<Slider>();
+		for (name in slidersName) {
+			slidersList.push(getComponentAs(name, Slider));
+		}
+		var total:Int = 0;
+		for (slider in slidersList) {
+			total += Std.int(slider.value);
+		}
+		total += Std.int(callerValue);
+		
+		var delta:Int = availableTotal - total;
+		
+		for (slider in slidersList) {
+			var value:Int = Std.int(slider.value);
+			
+			var newValue = Std.int(value + (delta / 2));
+			if (newValue < 0) {
+				newValue = 0;
+			}
+			slider.max = newValue;
 		}
 	}
 	
