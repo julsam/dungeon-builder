@@ -16,6 +16,17 @@ class Utils
 	}
 	
 	/**
+	 * Returns a random Int between min <= Int <= max.
+	 * @param	min
+	 * @param	max
+	 * @return	The random Int. Can include both endpoints.
+	 */
+	public static function randint(min:Int, max:Int):Int
+	{
+		return (Math.floor(Math.random() * (max - min + 1)) + min);
+	}
+	
+	/**
 	 * Returns a random Int between min <= Int < max.
 	 * @param	min
 	 * @param	max
@@ -24,6 +35,44 @@ class Utils
 	public static inline function randrange(min:Int, max:Int):Int
 	{
 		return (Math.floor(Math.random() * (max - min)) + min);
+	}
+	
+	/**
+	 * Random choice in an array.
+	 */
+	public static inline function choice<T>(array:Array<T>):T 
+	{
+		return array[Std.random(array.length)];
+	}
+	
+	/**
+	 * Get all values from a 2D array and return them in a 1 dimensional array.
+	 */
+	public static inline function values<T>(array:Array<Array<T>>):Array<T>
+	{
+		var newArray:Array<T> = new Array<T>();
+		for (y in 0...array.length) {
+			for (x in 0...array[y].length) {
+				newArray.push(array[y][x]);
+			}
+		}
+		return newArray;
+	}
+	
+	/**
+	 * Sort array.
+	 * @param   array   Array to sort.
+	 * @return  Return a sorted copy of the given array.
+	 */
+	public static inline function sorted(array:Array<Int>):Array<Int>
+	{
+		var newArray = array.copy();
+		newArray.sort(function (a:Int, b:Int) {
+			if (a < b) return -1;
+			if (a > b) return 1;
+			return 0;
+		});
+		return newArray;
 	}
 	
 	/**
